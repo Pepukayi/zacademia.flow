@@ -14,7 +14,7 @@
                             id="street_address"
                             name="street_address"
                             type="text"
-                            autocomplete="street_address"
+                            autocomplete=""
                             placeholder="street address"
                             class="w-full"
                         />

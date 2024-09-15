@@ -164,8 +164,7 @@ const form = useForm({
 let submit = () => {
     // console.log("First Name: " . formData.getPersonalInformation)
     form.transform((data) => ({
-        ...data,
-        ...appData.getPersonalInformation,
+        ...appData.getRegistrationInformation,
 
     })).post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),

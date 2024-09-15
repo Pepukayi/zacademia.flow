@@ -40,7 +40,7 @@ class HandleInertiaRequests extends Middleware
         return array_merge(parent::share($request), [
             'auth' => Auth::user() ? [
                 'user' => [
-                    'username' => Auth::user()->first_name,
+                    'username' => Auth::user()->first_name . ' Chitondo',
                     'profile_photo_url' => 'https://ui-avatars.com/api/?name=&color=7F9CF5&background=EBF4FF',
                     'profile_photo_path' => '',
                     'current_application_status' => 'in_review'

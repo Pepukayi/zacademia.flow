@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserPersonalInformation extends Model
+class UserDocuments extends Model
 {
     use HasFactory;
 
-    protected $guarded = [''];
+    protected $guarded = [];
 }

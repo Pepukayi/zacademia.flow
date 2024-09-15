@@ -1,5 +1,5 @@
 <template>
-    <ApplicationAppLayout :steps="steps" :progressPercent="progressPercent" :height="'h-[650px]'">
+    <ApplicationAppLayout :steps="steps" :progressPercent="progressPercent" :height="'h-[700px]'">
 
                     <h3 class="mt-10 ml-4 text-lg text-center font-medium ">What is your identity number?</h3>
 
@@ -19,6 +19,18 @@
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-mostepe-green-light sm:text-sm sm:leading-6"
                                     />
                                     <InputError class="mt-2" :message="form.errors.id_number"/>
+                                </div>
+                            </div>
+
+                            <div class="block mt-3 col-span-full w-96">
+                                <InputLabel value="What type of ID document you using?" />
+                                <div class="mt-1">
+                                    <SelectDropdown
+                                        class="w-96"
+                                        :options="id_type"
+                                        :name="'id_type'"
+                                        @update:modelValue="(value) => appData.personal_information.id_type = value"/>
+                                    <InputError class="mt-2" :message="form.errors.id_type"/>
                                 </div>
                             </div>
 
@@ -57,6 +69,7 @@ import InputError from "@/Components/InputError.vue";
 import DocumentUpload from "@/Components/DocumentUpload.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
+import SelectDropdown from "@/Components/SelectDropdown.vue";
 
 let appData = useDataStore();
 
@@ -75,6 +88,11 @@ let back = function()
 {
     window.history.back();
 }
+
+const id_type = [
+    {name: 'ID'},
+    {name: 'Passport'},
+]
 
 const steps = [
     {id: '01', name: 'Personal Information', href: '#', status: 'current'},

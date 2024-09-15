@@ -1,80 +1,80 @@
 <template>
     <ApplicationAppLayout :steps="steps" :progressPercent="progressPercent" :height="'h-[900px]'">
 
-        <h3 class="mt-5 ml-4 text-lg text-center font-medium ">Parent/Guardian Information</h3>
+        <h3 class="mt-5 ml-4 text-lg text-center font-medium ">Other Parent/Guardian Information</h3>
 
         <form @submit.prevent="submit">
             <div class="m-2 grid justify-center items-center">
                 <div class="block mt-3 col-span-full w-96">
-                    <InputLabel value="Parent/Guardian Name" />
+                    <InputLabel value="Other Parent/Guardian Name" />
                     <div class="mt-1">
                         <TextInput
-                            v-model="appData.personal_information.parent_guardian_name"
-                            id="parent_guardian_name"
-                            name="parent_guardian_name"
+                            v-model="appData.personal_information.other_parent_guardian_name"
+                            id="other_parent_guardian_name"
+                            name="other_parent_guardian_name"
                             type="text"
-                            autocomplete="parent_guardian_name"
-                            placeholder="parent/guardian name"
+                            autocomplete="other_parent_guardian_name"
+                            placeholder="other parent/guardian name"
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-mostepe-green-light sm:text-sm sm:leading-6"
                         />
-                        <InputError class="mt-2" :message="form.errors.parent_guardian_name"/>
+                        <InputError class="mt-2" :message="form.errors.other_parent_guardian_name"/>
                     </div>
                 </div>
 
                 <div class="block mt-3 col-span-full w-96">
-                    <InputLabel value="Parent/Guardian Surname" />
+                    <InputLabel value="Other Parent/Guardian Surname" />
                     <div class="mt-1">
                         <TextInput
-                            v-model="appData.personal_information.parent_guardian_surname"
-                            id="parent_guardian_surname"
-                            name="parent_guardian_surname"
+                            v-model="appData.personal_information.other_parent_guardian_surname"
+                            id="other_parent_guardian_surname"
+                            name="other_parent_guardian_surname"
                             type="text"
-                            autocomplete="parent_guardian_surname"
-                            placeholder="parent/guardian surname"
+                            autocomplete="other_parent_guardian_surname"
+                            placeholder="other parent/guardian surname"
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-mostepe-green-light sm:text-sm sm:leading-6"
                         />
-                        <InputError class="mt-2" :message="form.errors.parent_guardian_surname"/>
+                        <InputError class="mt-2" :message="form.errors.other_parent_guardian_surname"/>
                     </div>
                 </div>
 
                     <div class="block mt-3 col-span-full w-96">
-                        <InputLabel value="Parent/Guardian Email" />
+                        <InputLabel value="Other Parent/Guardian Email" />
                         <div class="mt-1">
                             <TextInput
-                                v-model="appData.personal_information.parent_guardian_email"
-                                id="parent_guardian_email"
-                                name="parent_guardian_email"
+                                v-model="appData.personal_information.other_parent_guardian_email"
+                                id="other_parent_guardian_email"
+                                name="other_parent_guardian_email"
                                 type="text"
-                                autocomplete="parent_guardian_email"
-                                placeholder="parent/guardian email"
+                                autocomplete="other_parent_guardian_email"
+                                placeholder="other parent/guardian email"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-mostepe-green-light sm:text-sm sm:leading-6"
                             />
-                            <InputError class="mt-2" :message="form.errors.parent_guardian_email"/>
+                            <InputError class="mt-2" :message="form.errors.other_parent_guardian_email"/>
                         </div>
                     </div>
 
                     <div class="block mt-3 col-span-full w-96">
-                        <InputLabel value="Parent/Guardian contact number" />
+                        <InputLabel value="Other Parent/Guardian contact number" />
                         <div class="mt-1">
                             <TextInput
-                                v-model="appData.personal_information.parent_guardian_phone_number"
-                                id="parent_guardian_phone_number"
-                                name="parent_guardian_phone_number"
+                                v-model="appData.personal_information.other_parent_guardian_phone_number"
+                                id="other_parent_guardian_phone_number"
+                                name="other_parent_guardian_phone_number"
                                 type="text"
-                                autocomplete="parent_guardian_phone_number"
-                                placeholder="parent/guardian phone number"
+                                autocomplete="other_parent_guardian_phone_number"
+                                placeholder="other parent/guardian phone number"
                                 class="block w-full rounded-lg border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-mostepe-green-light sm:text-sm sm:leading-6"
                             />
-                            <InputError class="mt-2" :message="form.errors.parent_guardian_phone_number"/>
+                            <InputError class="mt-2" :message="form.errors.other_parent_guardian_phone_number"/>
                         </div>
                     </div>
 
                 <div class="block mt-3 col-span-full w-96">
                     <div class="block mt-3 col-span-full w-96">
-                        <DocumentUpload :label="'ID of your parent'"
-                                        :name="'spouse_id'"
-                                        @saveFile="(file) => appData.personal_information.parent_id = file"/>
-                        <InputError class="mt-2" :message="form.errors.parent_id"/>
+                        <DocumentUpload :label="'ID of your other parent'"
+                                        :name="'other_parent_id'"
+                                        @saveFile="(file) => appData.personal_information.other_parent_id = file"/>
+                        <InputError class="mt-2" :message="form.errors.other_parent_id"/>
                     </div>
                 </div>
             </div>
@@ -114,7 +114,7 @@ let submit = () => {
     form.transform((data) => ({
         ...data,
         ...appData.getPersonalInformation,
-    })).post(route('validateParentGuardian'), {});
+    })).post(route('validateOtherParentGuardian'), {});
 };
 
 let back = function()

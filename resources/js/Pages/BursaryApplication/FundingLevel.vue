@@ -5,9 +5,11 @@
                                                                 for?</h3>
 
         <form @submit.prevent="submit">
-            <div class="m-6 flex justify-center items-center">
-
+            <div class="m-6 grid justify-center items-center">
+                <div class="col-span-full mt-6">
                 <StakedRadioGroup :options="fundingLevels" @update:modelValue="(value) => appData.personal_information.funding_level = value"/>
+                    <InputError class="mt-2" :message="form.errors.funding_level"/>
+            </div>
             </div>
 
             <div class="m-6 flex justify-center space-x-16">
@@ -31,6 +33,7 @@ import {useDataStore} from "@/stores/DataStore";
 import NavLink from "@/Shared/NavLink.vue";
 import ApplicationAppLayout from "@/Layouts/ApplicationAppLayout.vue";
 import StakedRadioGroup from "@/Components/StakedRadioGroup.vue";
+import InputError from "@/Components/InputError.vue";
 
 let appData = useDataStore();
 

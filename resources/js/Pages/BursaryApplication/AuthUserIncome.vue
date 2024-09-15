@@ -4,7 +4,7 @@
         <TextInput
             id="annual_income"
             v-model="appData.personal_information.annual_income"
-            type="text"
+            type="number"
             class="block w-full mt-1"
             autofocus
             autocomplete="annual_income"

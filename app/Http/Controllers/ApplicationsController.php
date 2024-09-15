@@ -2,26 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Dispatchers\MailDispatcher;
-use App\Http\Resources\AgreementsResource;
-use App\Http\Resources\GeographicalDetailsResource;
-use App\Http\Resources\UserResource;
-use App\Http\Resources\VerificationDocumentsResource;
-use App\Mail\QueryCompleted;
-use App\Models\Agreements;
-use App\Models\AssetValues;
-use App\Models\Coin;
+use App\Http\Domains\BursaryApplications\BursaryApplications;
 use App\Models\GeographicalDetails;
-use App\Models\Queries;
 use App\Models\User;
-use App\Models\VerificationDocuments;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class ApplicationsController extends Controller
@@ -132,7 +121,14 @@ class ApplicationsController extends Controller
 
         $validated = Request::validate([
                                            'marital_status' => ['required', 'string', 'max:255'],
+                                           'stay_in' => ['required_if:parental_dependence,=,Yes', 'string', 'max:255'],
                                            'spouse_name' => [
+                                               'required_if:marital_status,=,Yes',
+                                               'nullable',
+                                               'string',
+                                               'max:255'
+                                           ],
+                                           'spouse_surname' => [
                                                'required_if:marital_status,=,Yes',
                                                'nullable',
                                                'string',
@@ -150,7 +146,7 @@ class ApplicationsController extends Controller
                                                'string',
                                                'max:255'
                                            ],
-                                           'dependents' => [
+                                           'household_dependents' => [
                                                'required_if:marital_status,=,Yes',
                                                'nullable',
                                                'string',
@@ -161,6 +157,12 @@ class ApplicationsController extends Controller
                                                'required_if:marital_status,=,Divorced',
                                                'nullable',
                                                'string',
+                                               'max:20'
+                                           ],
+                                           'number_parents_guardians' => [
+                                               'required_if:parental_dependence,=,Yes',
+                                               'nullable',
+                                               'numeric',
                                                'max:20'
                                            ],
                                            'spouse_id' => [
@@ -196,7 +198,7 @@ class ApplicationsController extends Controller
                                   'required_if:employment_details,=,Yes we are both working',
                                   'required_if:employment_details,=,I am the only one who is working',
                                   'nullable',
-                                  'string',
+                                  'numeric',
                                   'max:255'
                               ],
                               'spouse_annual_income' => [
@@ -313,12 +315,51 @@ class ApplicationsController extends Controller
         Log::debug(__METHOD__ . ' bof: ');
         Log::debug(__METHOD__ . ' Request: ' . print_r(Request::all(), true));
 
-        Request::validate([
-                              'stay_in' => ['required', 'string', 'max:255'],
-                              'parent_guardian_email' => ['nullable', 'string', 'max:255'],
-                              'parent_guardian_phone_number' => ['nullable', 'string', 'max:20'],
-                              'dependents' => ['nullable', 'string', 'max:255'],
-                          ]);
+        $validated = Request::validate([
+                                           'parent_guardian_name' => ['nullable', 'string', 'max:255'],
+                                           'parent_guardian_surname' => ['nullable', 'string', 'max:255'],
+                                           'parent_guardian_email' => ['nullable', 'string', 'max:255'],
+                                           'parent_guardian_phone_number' => ['nullable', 'string', 'max:20'],
+                                           'parent_id' => [
+                                               'required',
+                                               'file',
+                                               'mimes:pdf,jpg,jpeg,png,gif',
+                                               'max:11240'
+                                           ],
+                                           'number_parents_guardians' => [
+                                               'required',
+                                               'numeric',
+                                               'max:20'
+                                           ],
+                                       ]);
+
+        Log::debug(__METHOD__ . ' $validated: ' . print_r($validated, true));
+
+        if ($validated['number_parents_guardians'] == 2) {
+            return redirect('/profile-other-parent-guardian');
+        } else {
+            return redirect('/profile-parent-guardian-income');
+        }
+    }
+
+    public function validateOtherParentGuardian()
+    {
+        Log::debug(__METHOD__ . ' bof: ');
+        Log::debug(__METHOD__ . ' Request: ' . print_r(Request::all(), true));
+
+        $validated = Request::validate([
+                                           'other_parent_guardian_name' => ['nullable', 'string', 'max:255'],
+                                           'other_parent_guardian_surname' => ['nullable', 'string', 'max:255'],
+                                           'other_parent_guardian_email' => ['nullable', 'string', 'max:255'],
+                                           'other_parent_guardian_phone_number' => ['nullable', 'string', 'max:20'],
+                                           'other_parent_id' => [
+                                               'required',
+                                               'file',
+                                               'mimes:pdf,jpg,jpeg,png,gif',
+                                               'max:11240'
+                                           ],
+                                       ]);
+
 
         return redirect('/profile-parent-guardian-income');
     }
@@ -329,41 +370,42 @@ class ApplicationsController extends Controller
         Log::debug(__METHOD__ . ' Request: ' . print_r(Request::all(), true));
 
         Request::validate([
-                              'working_parents_guardians' => ['required', 'string', 'max:255'],
+                              'parents_dependents' => ['required', 'string', 'max:255'],
+                              'number_working_parents_guardians' => ['required', 'string', 'max:255'],
                               'parent_annual_income' => [
-                                  'required_if:working_parents_guardians,=,One parent/guardian is working',
-                                  'required_if:working_parents_guardians,=,Both parents/guardians are working',
+                                  'required_if:number_working_parents_guardians,=,One parent/guardian is working',
+                                  'required_if:number_working_parents_guardians,=,Both parents/guardians are working',
                                   'nullable',
                                   'string',
                                   'max:255'
                               ],
                               'other_parent_annual_income' => [
-                                  'required_if:working_parents_guardians,=,Both parents/guardians are working',
+                                  'required_if:number_working_parents_guardians,=,Both parents/guardians are working',
                                   'nullable',
                                   'string',
                                   'max:20'
                               ],
                               'affadavit_parents_dont_work' => [
-                                  'required_if:working_parents_guardians,=,None',
+                                  'required_if:number_working_parents_guardians,=,None',
                                   'nullable',
                                   'file',
                                   'mimes:pdf,jpg,jpeg,png,gif',
                                   'max:11240'],
                               'affadavit_orphan' => [
-                                  'required_if:working_parents_guardians,=,I am an orphan',
+                                  'required_if:number_working_parents_guardians,=,I am an orphan',
                                   'nullable',
                                   'file',
                                   'mimes:pdf,jpg,jpeg,png,gif',
                                   'max:11240'],
                               'parent_proof_of_income' => [
-                                  'required_if:working_parents_guardians,=,One parent/guardian is working',
-                                  'required_if:working_parents_guardians,=,Both parents/guardians are working',
+                                  'required_if:number_working_parents_guardians,=,One parent/guardian is working',
+                                  'required_if:number_working_parents_guardians,=,Both parents/guardians are working',
                                   'nullable',
                                   'file',
                                   'mimes:pdf,jpg,jpeg,png,gif',
                                   'max:11240'],
                               'other_parent_proof_of_income' => [
-                                  'required_if:working_parents_guardians,=,Both parents/guardians are working',
+                                  'required_if:number_working_parents_guardians,=,Both parents/guardians are working',
                                   'nullable',
                                   'file',
                                   'mimes:pdf,jpg,jpeg,png,gif',
@@ -465,9 +507,9 @@ class ApplicationsController extends Controller
         Log::debug(__METHOD__ . ' Request: ' . print_r(Request::all(), true));
 
         Request::validate([
-                              'background_circumstances' => ['required', 'string', 'max:255'],
-                              'achievements' => ['required', 'string', 'max:255'],
-                              'leadership_roles' => ['required', 'string', 'max:255'],
+                              'background_circumstances' => ['required', 'string'],
+                              'achievements' => ['required', 'string'],
+                              'leadership_roles' => ['required', 'string'],
                           ]);
 
         return redirect('/profile-talents');
@@ -479,13 +521,14 @@ class ApplicationsController extends Controller
         Log::debug(__METHOD__ . ' Request: ' . print_r(Request::all(), true));
 
         Request::validate([
-                              'strength_weaknesses' => ['required', 'string', 'max:255'],
-                              'talent_study_relation' => ['required', 'string', 'max:255'],
-                              'personal_statement' => ['required', 'string', 'max:255'],
+                              'strength_weaknesses' => ['required', 'string'],
+                              'talent_study_relation' => ['required', 'string'],
+                              'personal_statement' => ['required', 'string'],
                           ]);
 
         return redirect('/profile-picture');
     }
+
     public function validateProfilePicture()
     {
         Log::debug(__METHOD__ . ' bof: ');
@@ -510,11 +553,28 @@ class ApplicationsController extends Controller
     {
         Log::debug(__METHOD__ . ' bof: ');
         Log::debug(__METHOD__ . ' Request: ' . print_r(Request::all(), true));
+        Log::debug(__METHOD__ . ' Request Json Object: ' . print_r(json_encode(Request::all()), true));
 
         $applicationData = Request::all();
 
+//        $user = Auth::user();
+//        Log::debug(__METHOD__ . ' $user: ' . print_r($user, true));
+//        $userId = Auth::id();
+//        Log::debug(__METHOD__ . ' $userId: ' . print_r($userId, true));
+//        Log::debug(__METHOD__ . ' Auth::user()->first_name: ' . print_r(Auth::user()->first_name, true));
+//        dd(Auth::user()->first_name);
+
         return DB::transaction(function () use ($applicationData) {
 
+//            $userId = Auth::id();
+//            if(is_null($userId)){
+//                $userId = Auth::user()->id;
+//            }
+//
+//            Log::debug(__METHOD__ . ' $userId: ' . print_r($userId, true));
+            /** @var BursaryApplications $bursaryApplicationDomain */
+            $bursaryApplicationDomain = app(BursaryApplications::class);
+            $bursaryApplicationDomain->savePersonalInformation(1, $applicationData['personal_information']);
 
         });
     }

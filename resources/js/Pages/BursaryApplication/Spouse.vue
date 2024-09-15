@@ -89,15 +89,15 @@
                         <InputLabel value="Total dependents on you and your spouse" />
                         <div class="mt-1">
                             <TextInput
-                                v-model="appData.personal_information.dependents"
-                                id="dependents"
-                                name="dependents"
+                                v-model="appData.personal_information.household_dependents"
+                                id="household_dependents"
+                                name="household_dependents"
                                 type="text"
-                                autocomplete="dependents"
+                                autocomplete="household_dependents"
                                 placeholder="Your dependants"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-mostepe-green-light sm:text-sm sm:leading-6"
                             />
-                            <InputError class="mt-2" :message="form.errors.dependents"/>
+                            <InputError class="mt-2" :message="form.errors.household_dependents"/>
                         </div>
                     </div>
 
@@ -111,9 +111,40 @@
 
                 <div v-if="['Divorced', 'No'].includes(appData.personal_information.marital_status)" class="col-span-full mt-3 w-96">
                     <InputLabel value="Are you still a dependent on your parents/guardians?" />
-                    <CompactRadioGroup
+                    <HorizontalRadioGroup
                         :options="still_dependent"
+                        :name="'still_dependent'"
                         @update:modelValue="(value) => appData.personal_information.parental_dependence = value"/>
+
+                    <div v-if="appData.personal_information.parental_dependence === 'Yes'" class="block mt-3 col-span-full w-96">
+                        <InputLabel value="How many parents/guardians do you still have?" />
+                        <div class="mt-1">
+                            <HorizontalRadioGroup
+                                :options="number_parents"
+                                :name="'number_parents_guardians'"
+                                @update:modelValue="(value) => appData.personal_information.number_parents_guardians = value"/>
+<!--                            <SelectDropdown-->
+<!--                                class="w-96"-->
+<!--                                :options="number_parents"-->
+<!--                                :name="'number_parents_guardians'"-->
+<!--                                @update:modelValue="(value) => appData.personal_information.number_parents_guardians = value"/>-->
+                            <InputError class="mt-2" :message="form.errors.number_parents_guardians"/>
+                        </div>
+
+                        <InputLabel class="mt-3" value="Do you live with your parent/guardian?" />
+                        <div class="mt-1">
+                            <HorizontalRadioGroup
+                                :options="stay_in"
+                                :name="'stay_in'"
+                                @update:modelValue="(value) => appData.personal_information.stay_in = value"/>
+<!--                            <SelectDropdown-->
+<!--                                class="w-96"-->
+<!--                                :options="stay_in"-->
+<!--                                :name="'stay_in'"-->
+<!--                                @update:modelValue="(value) => appData.personal_information.stay_in = value"/>-->
+                            <InputError class="mt-2" :message="form.errors.stay_in"/>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -142,7 +173,7 @@ import SelectDropdown from "@/Components/SelectDropdown.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import DocumentUpload from "@/Components/DocumentUpload.vue";
-import CompactRadioGroup from "@/Components/CompactRadioGroup.vue";
+import HorizontalRadioGroup from "@/Components/HorizontalRadioGroup.vue";
 
 let appData = useDataStore();
 
@@ -176,6 +207,16 @@ const married = [
 ]
 
 const still_dependent = [
+    {name: 'Yes'},
+    {name: 'No'},
+]
+
+const number_parents = [
+    {name: 1},
+    {name: 2},
+]
+
+const stay_in = [
     {name: 'Yes'},
     {name: 'No'},
 ]

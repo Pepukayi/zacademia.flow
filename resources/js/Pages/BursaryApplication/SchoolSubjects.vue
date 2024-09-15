@@ -90,12 +90,15 @@
                 </div>
 
                 <div v-if="appData.school_information.subject_count < 10" class="mt-6 flex justify-center items-center">
-                    <button
-                        type="button"
-                        v-text="appData.school_information.subject_count < 1 ? 'Add Subject' : 'Add Another Subject'"
-                        @click="showModal = true"
-                        class="text-center w-50 rounded-md bg-mostepe-green-dark px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-mostepe-green-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mostepe-green-dark">
-                    </button>
+                    <div class="col-span-full">
+                        <button
+                            type="button"
+                            v-text="appData.school_information.subject_count < 1 ? 'Add Subject' : 'Add Another Subject'"
+                            @click="showModal = true"
+                            class="text-center w-50 rounded-md bg-mostepe-green-dark px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-mostepe-green-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mostepe-green-dark">
+                        </button>
+                        <InputError class="mt-2" :message="form.errors.subjects"/>
+                    </div>
                 </div>
 
                 <div class="m-6 w-96">

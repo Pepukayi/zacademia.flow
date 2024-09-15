@@ -29,6 +29,7 @@ Route::inertia('/profile-spouse', 'BursaryApplication/Spouse');
 Route::inertia('/profile-household-income', 'BursaryApplication/HouseholdIncome');
 Route::inertia('/profile-single-income', 'BursaryApplication/SingleIncome');
 Route::inertia('/profile-parent-guardian', 'BursaryApplication/ParentGuardian');
+Route::inertia('/profile-other-parent-guardian', 'BursaryApplication/OtherParentGuardian');
 Route::inertia('/profile-parent-guardian-income', 'BursaryApplication/ParentGuardianIncome');
 Route::inertia('/profile-disability', 'BursaryApplication/Disability');
 Route::inertia('/profile-nsfas', 'BursaryApplication/NSFAS');
@@ -60,6 +61,7 @@ Route::post('/validate-birth-day', [ApplicationsController::class, 'validateBirt
 Route::post('/validate-demography', [ApplicationsController::class, 'validateDemographics'])->name('validateDemographics');
 Route::post('/validate-address', [ApplicationsController::class, 'validateAddress'])->name('validateAddress');
 Route::post('/validate-parent-guardian', [ApplicationsController::class, 'validateParentGuardian'])->name('validateParentGuardian');
+Route::post('/validate-other-parent-guardian', [ApplicationsController::class, 'validateOtherParentGuardian'])->name('validateOtherParentGuardian');
 Route::post('/validate-spouse-guardian', [ApplicationsController::class, 'validateSpouseInformation'])->name('validateSpouseInformation');
 Route::post('/validate-household-income', [ApplicationsController::class, 'validateHouseholdIncome'])->name('validateHouseholdIncome');
 Route::post('/validate-single-income', [ApplicationsController::class, 'validateSingleIncome'])->name('validateSingleIncome');
@@ -76,6 +78,10 @@ Route::post('/validate-talents-information', [ApplicationsController::class, 'va
 Route::post('/validate-profile-picture', [ApplicationsController::class, 'validateProfilePicture'])->name('validateProfilePicture');
 Route::post('/save-complete-application', [ApplicationsController::class, 'saveAndCompleteApplication'])->name('saveAndCompleteApplication');
 
+//TODO to remove this after all testing
+Route::get('/token', function () {
+    return csrf_token();
+});
 
 //Route::post('/validate-verification-documents', [ApplicationsController::class, 'validateVerificationDocuments'])->name('validateVerificationDocuments');
 

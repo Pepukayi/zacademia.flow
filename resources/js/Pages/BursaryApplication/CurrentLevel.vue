@@ -3,9 +3,11 @@
         <h3 class="mt-10 ml-4 text-lg text-center font-medium ">What level of studies are you currently</h3>
 
         <form @submit.prevent="submit">
-            <div class="m-6 flex justify-center items-center">
-
+            <div class="m-6 grid justify-center items-center">
+            <div class="col-span-full mt-6">
                 <StakedRadioGroup :options="currentLevels" @update:modelValue="(value) => appData.personal_information.current_level = value"/>
+                <InputError class="mt-2" :message="form.errors.current_level"/>
+            </div>
             </div>
 
             <div class="m-6 flex justify-center items-center">
@@ -21,6 +23,7 @@ import { Link, usePage, useForm } from '@inertiajs/vue3'
 import {useDataStore} from "@/stores/DataStore";
 import ApplicationAppLayout from "@/Layouts/ApplicationAppLayout.vue";
 import StakedRadioGroup from "@/Components/StakedRadioGroup.vue";
+import InputError from "@/Components/InputError.vue";
 
 let appData = useDataStore();
 
