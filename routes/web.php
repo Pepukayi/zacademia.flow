@@ -76,7 +76,12 @@ Route::post('/validate-target-career-path', [ApplicationsController::class, 'val
 Route::post('/validate-background-information', [ApplicationsController::class, 'validateBackgroundInformation'])->name('validateBackgroundInformation');
 Route::post('/validate-talents-information', [ApplicationsController::class, 'validateTalentsInformation'])->name('validateTalentsInformation');
 Route::post('/validate-profile-picture', [ApplicationsController::class, 'validateProfilePicture'])->name('validateProfilePicture');
-Route::post('/save-complete-application', [ApplicationsController::class, 'saveAndCompleteApplication'])->name('saveAndCompleteApplication');
+
+Route::middleware([
+                      'add.testing.docs',
+                  ])->group(function () {
+    Route::post('/save-complete-application', [ApplicationsController::class, 'saveAndCompleteApplication'])->name('saveAndCompleteApplication');
+});
 
 //TODO to remove this after all testing
 Route::get('/token', function () {

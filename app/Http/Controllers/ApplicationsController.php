@@ -50,7 +50,7 @@ class ApplicationsController extends Controller
                                   'file',
                                   'mimes:pdf,jpg,jpeg,png,gif',
                                   'max:11240'],
-                              'back_id_copy' => [],
+                              'back_id_copy' => ['file'],
                           ]);
 
         return redirect('/profile-residence');
@@ -553,28 +553,31 @@ class ApplicationsController extends Controller
     {
         Log::debug(__METHOD__ . ' bof: ');
         Log::debug(__METHOD__ . ' Request: ' . print_r(Request::all(), true));
-        Log::debug(__METHOD__ . ' Request Json Object: ' . print_r(json_encode(Request::all()), true));
+//        Log::debug(__METHOD__ . ' Request Json Object: ' . print_r(json_encode(Request::all()), true));
 
         $applicationData = Request::all();
 
-//        $user = Auth::user();
-//        Log::debug(__METHOD__ . ' $user: ' . print_r($user, true));
-//        $userId = Auth::id();
-//        Log::debug(__METHOD__ . ' $userId: ' . print_r($userId, true));
-//        Log::debug(__METHOD__ . ' Auth::user()->first_name: ' . print_r(Auth::user()->first_name, true));
-//        dd(Auth::user()->first_name);
-
         return DB::transaction(function () use ($applicationData) {
 
-//            $userId = Auth::id();
-//            if(is_null($userId)){
-//                $userId = Auth::user()->id;
-//            }
-//
-//            Log::debug(__METHOD__ . ' $userId: ' . print_r($userId, true));
+            $userId = Auth::id();
+
+            //TODO remove id fudge for testing
+            $userId = 1;
+
+            if(is_null($userId)){
+                $userId = Auth::user()->id;
+            }
+
+            Log::debug(__METHOD__ . ' $userId: ' . print_r($userId, true));
             /** @var BursaryApplications $bursaryApplicationDomain */
             $bursaryApplicationDomain = app(BursaryApplications::class);
-            $bursaryApplicationDomain->savePersonalInformation(1, $applicationData['personal_information']);
+            $bursaryApplicationDomain->savePersonalInformation($userId, $applicationData['personal_information']);
+
+            $bursaryApplicationDomain->saveGeographicalInformation($userId, $applicationData['personal_information']);
+
+            $bursaryApplicationDomain->saveGuardianInformation($userId, $applicationData['personal_information']);
+
+            $bursaryApplicationDomain->saveSpousalInformation($userId, $applicationData['personal_information']);
 
         });
     }
